@@ -1,0 +1,74 @@
+@import "tailwindcss";
+@import "../theme/variables.css";
+@import "../theme/common.css";
+
+/* 定义暗黑模式 */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+/* 应用主题变量到实用类 */
+@layer base {
+ :root {
+  color-scheme: light;
+  --active: var(--color-theme);
+  --background: var(--color-background);
+  --foreground: var(--color-foreground);
+  --primary: var(--color-primary);
+  --primary-foreground: var(--color-primary-foreground);
+  --secondary: var(--color-secondary);
+  --secondary-foreground: var(--color-secondary-foreground);
+  --border: var(--color-border);
+ }
+
+ .dark {
+  color-scheme: dark;
+  --active: var(--color-dark-theme);
+  --background: var(--color-dark-background);
+  --foreground: var(--color-dark-foreground);
+  --primary: var(--color-dark-primary);
+  --primary-foreground: var(--color-dark-primary-foreground);
+  --secondary: var(--color-dark-secondary);
+  --secondary-foreground: var(--color-dark-secondary-foreground);
+  --border: var(--color-dark-border);
+ }
+}
+
+html,
+body {
+ height: 100%;
+ width: 100%;
+}
+
+/* 整个滚动条 */
+::-webkit-scrollbar {
+ width: 8px; /* 垂直滚动条宽度 */
+ height: 8px; /* 水平滚动条高度 */
+}
+
+/* 滚动条轨道 */
+::-webkit-scrollbar-track {
+ background: transparent;
+}
+
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+ background: var(--secondary-foreground);
+ border-radius: 4px;
+}
+
+/* 滑块悬停效果 */
+::-webkit-scrollbar-thumb:hover {
+ /* background: #555; */
+}
+
+/* 基础样式 */
+@layer base {
+ * {
+  @apply border-border;
+ }
+
+ /* body {
+  background-color: var(--background);
+  color: var(--foreground);
+  transition: all 0.3s ease-in-out;
+ } */
+}
