@@ -2,30 +2,18 @@
  * @Author: yoyo
  * @Date: 2025-12-24 10:15:47
  * @LastEditors: yoyo
- * @LastEditTime: 2026-01-12 14:32:35
+ * @LastEditTime: 2026-01-22 16:16:53
  * @FilePath: \next-react\src\app\service\page.tsx
  * @Description:
  */
 
 "use client";
 import { AnimateFadeIn } from "@/src/components/AnimateCom";
-import personal from "@/src/data/home";
 import { services } from "@/src/data/services";
 import { motion } from "framer-motion";
-import {
- ArrowRight,
- HeartPlus,
- HeartPulse,
- Mail,
- MapPin,
- Music,
- Music2,
- Phone,
- Smartphone,
-} from "lucide-react";
-import Image from "next/image";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import SpotlightCard from "@/src/components/SpotlightCard";
 
 export default function DemoPage() {
  return (
@@ -33,13 +21,9 @@ export default function DemoPage() {
    <div className="text-2xl my-10 title-border text-shadow-lg">SERVICE</div>
    <div className="grid grid-cols-2 gap-10 h-150 mx-auto">
     {services.map((ele, index) => (
-     <motion.div
+     <SpotlightCard
       key={index}
-      className="p-8 bg-(--active)/10 rounded-2xl flex flex-col"
-      whileHover={{
-       y: -8,
-      }}
-      transition={{ duration: 0.5 }}
+      className="bg-(--active)/10 p-8 flex flex-col size-full rounded-2xl overflow-hidden"
      >
       <div className="font-bold mb-6 border-b pb-4 border-(--active)/40">
        {ele.name}
@@ -51,7 +35,7 @@ export default function DemoPage() {
        </motion.span>
        <ArrowRight size={20} />
       </div>
-     </motion.div>
+     </SpotlightCard>
     ))}
    </div>
   </AnimateFadeIn>

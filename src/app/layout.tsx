@@ -2,7 +2,7 @@
  * @Author: yoyo
  * @Date: 2025-12-12 17:31:13
  * @LastEditors: yoyo
- * @LastEditTime: 2026-01-08 18:40:40
+ * @LastEditTime: 2026-01-22 16:24:24
  * @FilePath: \next-react\src\app\layout.tsx
  * @Description:
  */
@@ -11,7 +11,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "../components/Navbar";
 import "./globals.css";
 import { ThemeProvider } from "../providers/ThemeProvider";
-import { ThemeColor } from "../components/Theme";
+import Theme from "../components/Theme";
 
 const geistSans = Geist({
  variable: "--font-geist-sans",
@@ -37,13 +37,13 @@ export default function RootLayout({
   <html lang="en" suppressHydrationWarning>
    <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-     <main className="size-full overflow-auto">
-      <Navbar />
+     <main className="size-full">
+      {/* <Navbar /> */}
       {children}
      </main>
-    </ThemeProvider>
 
-    <ThemeColor></ThemeColor>
+     <Theme />
+    </ThemeProvider>
    </body>
   </html>
  );

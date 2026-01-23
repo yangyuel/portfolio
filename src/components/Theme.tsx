@@ -2,7 +2,7 @@
  * @Author: yoyo
  * @Date: 2025-12-24 15:39:21
  * @LastEditors: yoyo
- * @LastEditTime: 2026-01-08 17:39:17
+ * @LastEditTime: 2026-01-22 18:48:23
  * @FilePath: \next-react\src\components\Theme.tsx
  * @Description:
  */
@@ -22,7 +22,7 @@ export function SunMoon() {
   setMounted(true);
  }, []);
 
- function toggleTheme() {
+ function toggleLight() {
   const newTheme = theme === "dark" ? "light" : "dark";
   document.documentElement.setAttribute("data-theme", newTheme);
   setTheme(newTheme);
@@ -31,7 +31,7 @@ export function SunMoon() {
  if (!mounted) {
   return (
    <button
-    className="w-16 h-7 rounded-2xl  flex items-center px-1 cursor-pointer border justify-start dark:justify-end"
+    className="w-16 h-7 rounded-2xl flex items-center px-1 cursor-pointer border justify-start dark:justify-end"
     style={{
      backgroundColor: "var(--primary-foreground)",
     }}
@@ -41,13 +41,13 @@ export function SunMoon() {
 
  return (
   <button
-   className={`w-16 h-7 rounded-2xl flex items-center px-1 cursor-pointer border ${
+   className={`w-14 h-6 rounded-2xl flex items-center px-1 cursor-pointer border ${
     theme === "dark" ? "justify-end" : "justify-start"
    }`}
    style={{
     backgroundColor: "var(--primary-foreground)",
    }}
-   onClick={toggleTheme}
+   onClick={toggleLight}
   >
    <motion.div layout>
     {theme === "dark" ? (
@@ -62,7 +62,15 @@ export function SunMoon() {
 
 export function ThemeColor() {
  const [show, setShow] = useState(false);
- const colors = ["#fd3f92", "#837cda", "#ff770f", "#ad0013"];
+ const colors = [
+  "#fd3f92",
+  "#837cda",
+  "#ff770f",
+  "#ad0013",
+  "#7df9ff",
+  "#2E8B57",
+  "#7CFC00",
+ ];
 
  function setTheme(color: string) {
   localStorage.setItem("theme-color", color);
@@ -80,13 +88,13 @@ export function ThemeColor() {
  }, []);
 
  return (
-  <motion.div className="fixed top-1/3 right-0 z-100 flex gap-2 items-center">
+  <div className="flex gap-2 items-center">
    <AnimatePresence initial={false}>
     {show &&
      colors.map((ele, index) => (
       <motion.div
        key={ele}
-       className="w-8 h-8 rounded-full border cursor-pointer"
+       className="w-6 h-6 rounded-full border cursor-pointer"
        style={{ backgroundColor: ele }}
        onClick={() => setTheme(ele)}
        initial={{ opacity: 0, scale: 0 }}
@@ -104,8 +112,55 @@ export function ThemeColor() {
     className="bg-(--secondary-foreground) p-1 rounded-full cursor-pointer"
     onClick={() => setShow(!show)}
    >
-    <Palette color="var(--active)" size={30} />
+    <Palette color="var(--active)" size={24} />
    </div>
-  </motion.div>
+  </div>
+ );
+}
+
+export function Light() {
+ const { theme, setTheme } = useTheme();
+ const [mounted, setMounted] = useState(false);
+
+ useEffect(() => {
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  setMounted(true);
+ }, []);
+
+ function toggleLight() {
+  const newTheme = theme === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", newTheme);
+  setTheme(newTheme);
+ }
+
+ if (!mounted) {
+  return (
+   <div
+    className="bg-(--secondary-foreground) w-8 h-8 rounded-full cursor-pointer"
+    onClick={toggleLight}
+   ></div>
+  );
+ }
+
+ return (
+  <div
+   className="bg-(--secondary-foreground) p-1 rounded-full cursor-pointer"
+   onClick={toggleLight}
+  >
+   {theme === "dark" ? (
+    <Sun className="text-white" size={24} />
+   ) : (
+    <Moon className="text-black" size={24} />
+   )}
+  </div>
+ );
+}
+
+export default function Theme() {
+ return (
+  <div className="fixed top-4 right-5 z-20 flex items-center gap-4">
+   <ThemeColor />
+   <Light />
+  </div>
  );
 }

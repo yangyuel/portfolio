@@ -43,3 +43,7 @@
  line-height: 1;
  padding-left: 8px;
 }
+
+.bezier-arc {
+ /* background: radial-gradient(transparent 10%, #fd3f914a 100%); */
+}

@@ -1,279 +1,207 @@
 /*
  * @Author: yoyo
- * @Date: 2025-12-24 10:15:47
+ * @Date: 2026-01-20 16:44:06
  * @LastEditors: yoyo
- * @LastEditTime: 2026-01-13 14:51:31
+ * @LastEditTime: 2026-01-23 18:28:58
  * @FilePath: \next-react\src\app\page.tsx
  * @Description:
  */
-
 "use client";
-import personal from "@/src/data/home";
-import { AnimatePresence, m, motion } from "framer-motion";
-import {
- ArrowRight,
- HeartPlus,
- HeartPulse,
- Mail,
- MapPin,
- Music,
- Music2,
- Phone,
- Smartphone,
-} from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import portfolios, { IPortfolio } from "../data/portfolio";
-import HomeTitle from "../components/HomeTitle";
-import { services } from "../data/services";
 
-export default function DemoPage() {
- const [visualizerData, setVisualizerData] = useState<{ height: number }[]>([]);
- const [current, setCurrent] = useState(2);
- const [portfolioId, setPortfolioId] = useState("");
+import { animate, motion, useSpring } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { SplitText } from "gsap/SplitText";
+import { gsap } from "gsap";
+import About from "./about/page";
+import Concat from "./contact/page";
+import Service from "./service/page";
+import Skill from "./skill/page";
+import Experience from "./experience/page";
+import Portfolio from "./portfolio/page";
+import personal from "../data/about";
 
- const musicPath = "/images/home/music1.jpg";
+export default function HomePage() {
+ const containerRef = useRef<HTMLDivElement>(null);
+ const sectionsRef = useRef<HTMLDivElement[]>([]);
+ const [index, setIndex] = useState(0);
+ const [isScrolling, setIsScrolling] = useState(false);
+ const scaleY = useSpring(0, {
+  stiffness: 100,
+  damping: 30,
+  restDelta: 0.001,
+ });
 
- const portfolioUrl = "/images/portfolio/";
+ const sections = [
+  {
+   id: "about",
+   name: "ABOUT",
+   component: About,
+  },
+  {
+   id: "experience",
+   name: "EXPERIENCE",
+   component: Experience,
+  },
+  {
+   id: "skill",
+   name: "SKILLS",
+   component: Skill,
+  },
+  {
+   id: "portfolio",
+   name: "Portfolio",
+   component: Portfolio,
+  },
+  {
+   id: "service",
+   name: "SERVICE",
+   component: Service,
+  },
+  {
+   id: "concat",
+   name: "CONCAT",
+   component: Concat,
+  },
+ ];
+
+ function scrollToSection(current: number) {
+  if (current < 0 || current >= sections.length) return;
+
+  setIndex(current);
+  scaleY.set((current + 1) / sections.length);
+
+  const targetSection = sectionsRef.current[current];
+
+  if (targetSection && containerRef.current) {
+   const container = containerRef.current;
+   const targetTop = targetSection.offsetTop;
+
+   // 使用 Framer Motion 的 animate 实现平滑滚动
+   animate(container.scrollTop, targetTop, {
+    type: "spring",
+    stiffness: 100,
+    damping: 20,
+    onUpdate: (value) => {
+     container.scrollTop = value;
+    },
+   });
+  }
+ }
+
+ // 滚轮事件处理
+ useEffect(() => {
+  const handleWheel = (e: WheelEvent) => {
+   if (isScrolling) return;
+
+   e.preventDefault();
+   setIsScrolling(true);
+
+   if (e.deltaY > 0 && index < sections.length - 1) {
+    // 向下滚动
+    scrollToSection(index + 1);
+   } else if (e.deltaY < 0 && index > 0) {
+    // 向上滚动
+    scrollToSection(index - 1);
+   }
+
+   // 防抖，防止连续滚动
+   setTimeout(() => setIsScrolling(false), 500);
+  };
+  const container = containerRef.current;
+  if (container) {
+   container.addEventListener("wheel", handleWheel, { passive: false });
+  }
+
+  return () => {
+   if (container) {
+    container.removeEventListener("wheel", handleWheel);
+   }
+  };
+ }, [index, isScrolling]);
 
  useEffect(() => {
-  const generateVisualizerData = () => {
-   const bars = 50;
-   const newData = Array.from({ length: bars }, () => ({
-    height: Math.random() * 20 + 10,
-   }));
-   setVisualizerData(newData);
-  };
+  const split = SplitText.create(".logo", { type: "words, chars" });
 
-  generateVisualizerData();
-
-  const interval = setInterval(() => {
-   generateVisualizerData();
-  }, 200);
-  return () => clearInterval(interval);
+  // now animate the characters in a staggered fashion
+  gsap.from(split.chars, {
+   x: 150,
+   opacity: 0,
+   duration: 0.7,
+   ease: "power4",
+   stagger: 0.04,
+  });
  }, []);
 
- const portfolio = portfolioId
-  ? portfolios.find((ele, i) => `portfolio${i}` === portfolioId)
-  : undefined;
-
  return (
-  <motion.div
-   initial={{ opacity: 0 }}
-   animate={{ opacity: 1 }}
-   transition={{ duration: 0.4 }}
-  >
-   <div className="relative min-h-screen flex justify-center items-center px-[15%]">
-    {/* 背景图片 */}
-    {/* <Image
-     width={350}
-     height={180}
-     src={musicPath}
-     alt={musicPath}
-     className="size-full object-cover absolute inset-0 z-0"
+  <div className="size-full">
+   <div className="logo fixed top-5 left-5 font-bold text-xl cursor-pointer z-10 text-(--active)">
+    {personal.name}
+   </div>
+
+   {/* content  */}
+   <div ref={containerRef} className="size-full overflow-y-auto">
+    {sections.map((ele, i) => (
+     <motion.section
+      key={ele.id}
+      ref={(el: HTMLDivElement) => {
+       if (el) sectionsRef.current[i] = el;
+      }}
+      id={ele.id}
+      className="h-screen flex flex-col"
+     >
+      {ele.component ? <ele.component /> : null}
+     </motion.section>
+    ))}
+   </div>
+
+   {/* 侧边导航 */}
+   <div className="fixed flex flex-col left-6 top-1/4 z-10 text-sm gap-4 w-10">
+    {sections.map((ele, i) => (
+     <motion.div
+      key={ele.id}
+      className="cursor-pointer"
+      initial={index === i ? activeMenu : primaryMenu}
+      animate={index === i ? activeMenu : primaryMenu}
+      onClick={() => scrollToSection(i)}
+      whileHover={{ scale: 1.2, opacity: 1 }}
+     >
+      {ele.id}
+     </motion.div>
+    ))}
+   </div>
+
+   {/* 社交媒体图标 */}
+   <div className="flex flex-col gap-3 fixed left-6 bottom-20 z-10">
+    {personal.socialMedia.map((social, index) => (
+     <div key={index} className="p-1 rounded-full bg-(--secondary-foreground)">
+      {social.icon && <social.icon size={16} color="var(--active)" />}
+     </div>
+    ))}
+   </div>
+
+   {/* 滚动条 */}
+   <div className="fixed right-10 top-1/2 z-10 h-1/2 w-0.5 bg-(--primary)/50 -translate-y-1/2 flex">
+    <motion.div
+     className="w-full bg-(--active)"
+     style={{
+      scaleY,
+     }}
     />
-    <div className="absolute inset-0 z-1 backdrop-blur-md bg-black/30"></div> */}
-    {/* 内容 */}
-    <div className="relative z-2 p-20 flex gap-10 backdrop-blur-xl border rounded-3xl w-full">
-     <motion.div
-      className="absolute right-5 top-5"
-      initial={{ rotate: 0 }}
-      animate={{ rotate: 360 }}
-      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-     >
-      <Music2 />
-     </motion.div>
-
-     {/* 左侧内容 */}
-     <div className="flex flex-col gap-10 w-1/2 items-center justify-center h-full">
-      {/* 专辑图片 */}
-      <motion.div
-       className="flex justify-center items-center w-50 h-50 rounded-full bg-cover"
-       style={{
-        backgroundImage: `url(${musicPath})`,
-       }}
-       initial={{ rotate: 0 }}
-       animate={{ rotate: 360 }}
-       transition={{
-        duration: 10,
-        repeat: Infinity,
-        ease: "linear",
-       }}
-      >
-       <div className="w-1/3 h-1/3 bg-black rounded-full"></div>
-      </motion.div>
-
-      {/* 社交媒体图标 */}
-      <div className="flex gap-3">
-       {personal.socialMedia.map((social, index) => (
-        <motion.div key={index} className="p-1 rounded-full border-2">
-         {social.icon && <social.icon size={24} />}
-        </motion.div>
-       ))}
-      </div>
-
-      <Link
-       href="/contact"
-       className="backdrop-blur-xl bg-white/10 border-2 border-white/50 rounded-2xl p-2 px-4 text-xl"
-      >
-       <span>Get In </span>
-       <span className="text-(--active)">touch</span>
-      </Link>
-
-      {/* 音乐播放效果 */}
-      <div className="flex items-end justify-center h-10 gap-1">
-       {visualizerData.map((bar, index) => (
-        <motion.div
-         key={index}
-         className="w-1 bg-white rounded-t-lg"
-         initial={{ height: bar.height }}
-         animate={{ height: bar.height }}
-         transition={{
-          duration: 0.2,
-          type: "spring",
-          stiffness: 300,
-         }}
-        />
-       ))}
-      </div>
-     </div>
-
-     {/* 右侧内容 */}
-     <div className="w-1/2 text-center flex flex-col justify-center gap-4">
-      <div className="text-3xl font-bold flex items-center justify-center gap-2">
-       <span>{personal.name}</span>
-       <HeartPulse className="text-(--active)" size={30} />
-      </div>
-      <div className="text-xl">{personal.occupation}</div>
-
-      <div className="rounded-2xl p-2 text-center text-sm flex-1 overflow-y-auto">
-       {personal.introduce.split(".").map((sentence, index) => (
-        <div
-         key={index}
-         className="mb-2"
-         style={index === current ? currentLyric : {}}
-        >
-         {sentence}.
-        </div>
-       ))}
-      </div>
-
-      <div className="flex justify-between px-10">
-       <div className="flex gap-0.5">
-        <Smartphone className="text-sm" />
-        <span>{personal.phone}</span>
-       </div>
-       <div className="flex gap-0.5">
-        <Mail className="text-sm" />
-        <span>{personal.email}</span>
-       </div>
-       <div className="flex gap-0.5">
-        <MapPin className="text-sm" />
-        <span>{personal.address}</span>
-       </div>
-      </div>
-     </div>
-    </div>
    </div>
-
-   {/* portfolio */}
-   <HomeTitle title="PORTFOLIO" />
-   <div className="grid grid-cols-3 gap-5 px-[20%] mb-10">
-    {portfolios.slice(0, 3).map((ele, index) => (
-     <motion.div
-      key={`portfolio${index}`}
-      className="h-80 col-span-2 rounded-2xl flex flex-col relative bg-cover overflow-hidden"
-      layoutId={`portfolio${index}`}
-      style={{
-       gridColumn: `span ${index ? (index == 1 ? 1 : 3) : 2}/span ${
-        index ? (index == 1 ? 1 : 3) : 2
-       }`,
-       backgroundImage: `url(${portfolioUrl + ele.imgs[0]})`,
-      }}
-      whileHover={{ y: -8 }}
-      transition={{ duration: 0.5 }}
-      onClick={() => setPortfolioId(`portfolio${index}`)}
-     >
-      <div className="size-full absolute backdrop-blur bg-(--background)/30 p-4">
-       <div className="text-3xl font-bold">{ele.name}</div>
-       <div className="opacity-60 my-2">{ele.time}</div>
-       <div className="opacity-80 flex-1">{ele.des}</div>
-      </div>
-     </motion.div>
-    ))}
-   </div>
-
-   {/* 2. 展开后的详情视图 */}
-   <AnimatePresence>
-    {portfolioId && portfolio && (
-     <div className="fixed size-full z-10 top-0 left-0 flex-center">
-      {/* 背景遮罩 */}
-      <motion.div
-       className="size-full absolute bg-black/50"
-       initial={{ opacity: 0 }}
-       animate={{ opacity: 1 }}
-       exit={{ opacity: 0 }}
-       onClick={() => setPortfolioId("")}
-      />
-
-      {/* 展开的卡片 */}
-      <motion.div
-       className="w-120 absolute z-10 bg-secondary rounded-2xl overflow-hidden"
-       layoutId={portfolioId} // 核心：与列表卡片 ID 一致
-      >
-       <div className="bg-cover rounded-2xl">
-        <motion.img
-         src={portfolioUrl + portfolio.imgs[0]}
-         width={"100%"}
-        ></motion.img>
-        <motion.div className="text-xl pl-4">{portfolio?.name}</motion.div>
-        <motion.h2 className="pl-4 my-2">{portfolio?.time}</motion.h2>
-        <motion.p
-         className="p-2"
-         initial={{ opacity: 0 }}
-         animate={{ opacity: 0.6 }}
-         transition={{ delay: 0.2 }}
-        >
-         {portfolio?.des}
-        </motion.p>
-       </div>
-      </motion.div>
-     </div>
-    )}
-   </AnimatePresence>
-
-   <HomeTitle title="SERVICE" />
-   <div className="grid grid-cols-2 gap-10 h-150 px-[20%] mb-10">
-    {services.map((ele, index) => (
-     <motion.div
-      key={index}
-      className="p-8 bg-(--active)/10 rounded-2xl flex flex-col"
-      whileHover={{
-       y: -8,
-      }}
-      transition={{ duration: 0.5 }}
-     >
-      <div className="font-bold mb-6 border-b pb-4 border-(--active)/40">
-       {ele.name}
-      </div>
-      <div className="opacity-50 flex-1">{ele.des}</div>
-      <div className="font-bold text-(--active) flex items-center cursor-pointer">
-       <motion.span className="mr-1" whileHover={{ marginRight: "8px" }}>
-        <Link href="/contact">order now</Link>
-       </motion.span>
-       <ArrowRight size={20} />
-      </div>
-     </motion.div>
-    ))}
-   </div>
-  </motion.div>
+  </div>
  );
 }
 
-const currentLyric = {
+const activeMenu = {
+ opacity: 1,
+ scale: 1.2,
  color: "var(--active)",
- fontSize: "1.2em",
  fontWeight: "bold",
- marginBottom: "0.5em 0",
+};
+
+const primaryMenu = {
+ opacity: 0.5,
+ scale: 1,
+ color: "var(--foreground)",
+ fontWeight: "normal",
 };

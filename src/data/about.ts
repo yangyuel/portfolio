@@ -2,19 +2,20 @@
  * @Author: yoyo
  * @Date: 2025-12-26 17:15:33
  * @LastEditors: yoyo
- * @LastEditTime: 2026-01-04 17:02:14
- * @FilePath: \next-react\src\data\personal.ts
+ * @LastEditTime: 2026-01-23 18:29:25
+ * @FilePath: \next-react\src\data\about.ts
  * @Description:
  */
 
 import { Facebook, Github, Linkedin } from "lucide-react";
 
 const personal = {
- name: "Alex SMITH",
+ name: "ALEX SMITH",
  occupation: "Web Developer",
  email: "1458032960@qq.com",
  phone: "19112345678",
  address: "Chengdu, China",
+ imgs: ["star.jpg", "sea.jpg"],
  introduce:
   "Hello! I’m Alex Smith. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum ullamcorper sem, at placerat dolor volutpat ac. Duis nulla enim, condimentum nec ultricies.",
  socialMedia: [

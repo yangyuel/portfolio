@@ -2,14 +2,15 @@
  * @Author: yoyo
  * @Date: 2025-12-24 15:39:21
  * @LastEditors: yoyo
- * @LastEditTime: 2026-01-09 15:15:47
+ * @LastEditTime: 2026-01-21 17:43:30
  * @FilePath: \next-react\src\app\contact\page.tsx
  * @Description:
  */
 "use client";
 
 import { AnimateFadeIn } from "@/src/components/AnimateCom";
-import personal from "@/src/data/home";
+import ElectricBorder from "@/src/components/ElectricBorder";
+import personal from "@/src/data/about";
 import { Mail, MapPin, Smartphone } from "lucide-react";
 import { Transition } from "motion/react";
 import * as motion from "motion/react-client";
@@ -50,8 +51,27 @@ export default function resumePage() {
      </div>
     </div>
 
-    <AnimateFadeIn className="relative w-1/2 p-6 mx-10">
-     <div
+    <AnimateFadeIn className="relative w-1/2 mx-10">
+     {/* <div className="absolute text-center w-full top-2 left-0 text-2xl">
+       Contact Form
+      </div> */}
+
+     <ElectricBorder className="size-full">
+      <div className="size-full p-10 flex flex-col gap-4">
+       <div className="text-center w-full text-2xl">Contact Form</div>
+       <div className="flex-1 flex flex-col gap-2">
+        <div className="opacity-60">NAME</div>
+        <input style={formInput} type="text" />
+        <div className="opacity-60">EMAIL</div>
+        <input style={formInput} type="text" />
+        <div className="opacity-60 mt-2">MESSAGE</div>
+        <textarea style={formTextarea} />
+       </div>
+
+       <div className="w-full bg-(--active) h-12 flex-center">SEND MESSAGE</div>
+      </div>
+     </ElectricBorder>
+     {/* <div
       className="border-l-2 border-t-2 top-0 left-0"
       style={borderBox}
      ></div>
@@ -66,24 +86,7 @@ export default function resumePage() {
      <div
       className="border-r-2 border-b-2 right-0 bottom-0"
       style={borderBox}
-     ></div>
-
-     <div className="absolute text-center w-full top-2 left-0 text-2xl">
-      Contact Form
-     </div>
-
-     <div className="w-full h-full bg-(--primary-foreground) p-10 flex flex-col">
-      <div className="flex-1 flex flex-col gap-2">
-       <div className="opacity-60">NAME</div>
-       <input style={formInput} type="text" />
-       <div className="opacity-60">EMAIL</div>
-       <input style={formInput} type="text" />
-       <div className="opacity-60 mt-2">MESSAGE</div>
-       <textarea style={formTextarea} />
-      </div>
-
-      <div className="w-full bg-(--active) h-12 flex-center">SEND MESSAGE</div>
-     </div>
+     ></div> */}
     </AnimateFadeIn>
    </div>
   </div>
