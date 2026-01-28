@@ -2,7 +2,7 @@
  * @Author: yoyo
  * @Date: 2025-12-24 10:15:47
  * @LastEditors: yoyo
- * @LastEditTime: 2026-01-28 16:19:36
+ * @LastEditTime: 2026-01-28 18:41:04
  * @FilePath: \next-react\src\app\about\page.tsx
  * @Description:
  */
@@ -68,14 +68,14 @@ export default function DemoPage() {
     transition={{ duration: 0.6, repeat: Infinity, repeatType: "mirror" }}
    ></motion.div>
 
-   <div className="flex-center relative border-r border-(--primary)/40">
+   <div className="flex-center relative border-r border-(--primary)/40 h-full">
     <motion.img
      key={index}
      src={`${baseUrl}${personal.imgs[index]}`}
      alt={`Slide ${index + 1}`}
      width={320}
      height={600}
-     className="w-100 rounded-2xl"
+     className="object-contain w-100 rounded-2xl"
      initial={{ opacity: 0, x: 40 }}
      animate={{ opacity: 1, x: 0 }}
      transition={{ duration: 0.8 }}

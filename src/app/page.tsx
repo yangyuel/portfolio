@@ -2,7 +2,7 @@
  * @Author: yoyo
  * @Date: 2026-01-20 16:44:06
  * @LastEditors: yoyo
- * @LastEditTime: 2026-01-27 14:07:51
+ * @LastEditTime: 2026-01-28 18:28:43
  * @FilePath: \next-react\src\app\page.tsx
  * @Description:
  */
@@ -72,16 +72,12 @@ export default function HomePage() {
 
  function scrollToSection(current: number) {
   if (current < 0 || current >= sections.length) return;
-
   setIndex(current);
   scaleY.set((current + 1) / sections.length);
-
   const targetSection = sectionsRef.current[current];
-
   if (targetSection && containerRef.current) {
    const container = containerRef.current;
    const targetTop = targetSection.offsetTop;
-
    // 使用 Framer Motion 的 animate 实现平滑滚动
    animate(container.scrollTop, targetTop, {
     type: "spring",
